@@ -278,10 +278,11 @@ while True:
         end_time = time.time()
 
         print(pd.DataFrame(Filtered, columns = ['ФИО', 'День рождения', 'Пол', 'Возраст']))
-        print(end_time - start_time)
+        print('Время Работы: ', end_time - start_time)
     elif 'my App CopySQL: ' in request:
         #копирует базу в локальный список Main_Table
         #Example my App CopySQL: test_data.db
+        start_time = time.time()
         conn = sqlite3.connect(file_name(request, 'my App CopySQL: '))
         cursor = conn.cursor()
         cursor.execute('''
@@ -295,6 +296,30 @@ while True:
 
         conn.commit()
         conn.close()
+        end_time = time.time()
+        print('Время Работы: ', end_time - start_time)
+
+    elif 'my App FCopySQL: ' in request:
+        #копирует базу в локальный список Main_Table
+        #Example my App FCopySQL: test_data.db
+        start_time = time.time()
+        conn = sqlite3.connect(file_name(request, 'my App FCopySQL: '))
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT Name, Bdate 
+            FROM users
+            WHERE male = 'male';
+        ''')
+        users = cursor.fetchall()
+        Main_Table.clear()
+        for i in users:
+            Pers = Person(i[0], from_str_to_date(i[1]), 'male')
+            Main_Table.append(Pers)
+
+        conn.commit()
+        conn.close()
+        end_time = time.time()
+        print('Время Работы: ', end_time - start_time)
 
     elif 'my App WriteSQL: ' in request:
         #добавляет пакет данных к подключённой базе данных
